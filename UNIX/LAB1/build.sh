@@ -1,9 +1,8 @@
 #!/bin/sh
 
 src=$1
-[ -r "$src" ] || { echo "Нет файла: $src" >&2; exit 1; }
-
-out=$(sed -n 's/^.*Output:[[:space:]]*\([^[:space:]*]*\).*$/\1/p' "$src" | head -n 1)
+out=$(grep -E '^[[:space:]]*(//|/\*|\*|%)' "$src" |
+      sed -n 's/^.*Output:[[:space:]]*\([^[:space:]*]*\).*$/\1/p' | head -n 1)
 [ -n "$out" ] || { echo "Нет комментария Output:" >&2; exit 2; }
 
 dir=$(cd "$(dirname "$src")" && pwd)
