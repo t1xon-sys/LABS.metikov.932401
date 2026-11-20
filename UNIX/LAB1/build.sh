@@ -8,13 +8,17 @@ out=$(grep -E '^[[:space:]]*(//|/\*|\*|%)' "$src" |
 dir=$(cd "$(dirname "$src")" && pwd)
 src=$dir/$(basename "$src")
 
-tmp=$(mktemp -d) || exit 4
-trap 'rm -rf "$tmp"' EXIT
-trap 'exit 130' INT
-trap 'exit 143' TERM
+tmp= part=
+trap 'rm -rf "$tmp" "$part"' EXIT
 trap 'exit 129' HUP
+trap 'exit 130' INT
+trap 'exit 131' QUIT
+trap 'exit 134' ABRT
+trap 'exit 138' USR1
+trap 'exit 140' USR2
+trap 'exit 143' TERM
 
-export TMPDIR="$tmp" 
+tmp=$(mktemp -d) || exit 4
 
 case $src in
     *.c)   cc  -o "$tmp/$out" "$src" || exit 4 ;;
