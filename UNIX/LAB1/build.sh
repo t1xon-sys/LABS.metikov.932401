@@ -21,15 +21,15 @@ trap 'exit 143' TERM
 tmp=$(mktemp -d) || exit 4
 export TMPDIR="$tmp"
 cd "$tmp" || exit 4 
+
 case $src in
-    *.c)   cc  -o "$tmp/$out" "$src" || exit 4 ;;
-    *.cpp) c++ -o "$tmp/$out" "$src" || exit 4 ;;
-    *.tex)
-        cd "$tmp" || exit 4
-        pdflatex -interaction=nonstopmode "$src" >/dev/null || exit 4
-        mv "$(basename "$src" .tex).pdf" "$out" ;;
-    *) echo "Неизвестный тип файла" >&2; exit 3 ;;
+    *.c)   cc  -o "$out" "$src" || exit 4 ;;
+    *.cpp) c++ -o "$out" "$src" || exit 4 ;;
+    *.tex) TEXINPUTS="$dir:" pdflatex -interaction=nonstopmode "$src" >/dev/null || exit 4
+           mv "$(basename "$src" .tex).pdf" "$out" || exit 4 ;;
+    *) echo "Неизвестный тип файла (нужны .c, .cpp, .tex)" >&2; exit 3 ;;
 esac
 
-cp "$tmp/$out" "$dir/$out" || exit 4
+part=$dir/.$out.$$
+cp "$out" "$part" && mv "$part" "$dir/$out" || exit 4
 echo "Готово: $dir/$out"
