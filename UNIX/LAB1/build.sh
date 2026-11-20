@@ -19,7 +19,8 @@ trap 'exit 140' USR2
 trap 'exit 143' TERM
 
 tmp=$(mktemp -d) || exit 4
-
+export TMPDIR="$tmp"
+cd "$tmp" || exit 4 
 case $src in
     *.c)   cc  -o "$tmp/$out" "$src" || exit 4 ;;
     *.cpp) c++ -o "$tmp/$out" "$src" || exit 4 ;;
