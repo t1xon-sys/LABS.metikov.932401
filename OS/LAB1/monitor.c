@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
     struct monitor monitor;
     struct context ctx;
     pthread_t producer, consumer;
-    int count = 10; /* количество событий (можно задать аргументом) */
+    int count = 10; 
 
     if (argc > 1)
         count = atoi(argv[1]);
