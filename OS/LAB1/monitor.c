@@ -20,12 +20,12 @@ struct event
 
 static struct event *event_create(int id, const char *text)
 {
-    struct event *e = malloc(sizeof *e);
+    struct event *e = (struct event *)malloc(sizeof *e);
     if (e == NULL)
         return NULL;
     e->id = id;
     e->text = strdup(text);
-    e->payload = malloc(sizeof *e->payload);
+    e->payload = (struct payload *)malloc(sizeof *e->payload);
     if (e->text == NULL || e->payload == NULL)
     {
         free(e->text);
@@ -139,8 +139,9 @@ struct context
 
 static void *producer_thread(void *arg)
 {
-    struct context *ctx = arg;
-    for (int i = 1; i <= ctx->event_count; ++i)
+    struct context *ctx = (struct context *)arg;
+    int i;
+    for (i = 1; i <= ctx->event_count; ++i)
     {
         struct event *e;
 
@@ -160,7 +161,7 @@ static void *producer_thread(void *arg)
 
 static void *consumer_thread(void *arg)
 {
-    struct context *ctx = arg;
+    struct context *ctx = (struct context *)arg;
     while (monitor_consume(ctx->monitor))
         ;
     return NULL;
